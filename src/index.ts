@@ -7,7 +7,7 @@ interface User {
 }
 
 function Test(r: Repo<User>) {
-  r.query((row) => row.id.eq(1));
+  r.query((row) => row.id.eq(1).and(row.name.eq("sloane")));
 }
 
 Test(new RepoImpl<User>("users"));
