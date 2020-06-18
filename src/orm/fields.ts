@@ -14,10 +14,10 @@ export interface NullableField<R, T> extends Field<R, T> {
 }
 
 export class FieldImpl<R, T> implements Field<R, T>, NullableField<R, T> {
-  constructor(private name: string) {}
+  constructor(private name: string, private tableName: string) {}
 
   eq(t: T): Condition<R> {
-    return new ConditionImpl<T>({
+    return new ConditionImpl<T>(this.tableName, {
       __kind: "comparison",
       __comparison_type: "eq",
       value: t,
@@ -26,7 +26,7 @@ export class FieldImpl<R, T> implements Field<R, T>, NullableField<R, T> {
   }
 
   isNull(): Condition<R> {
-    return new ConditionImpl<T>({
+    return new ConditionImpl<T>(this.tableName, {
       __kind: "nullcheck",
       isNull: true,
       fieldName: this.name,
@@ -34,7 +34,7 @@ export class FieldImpl<R, T> implements Field<R, T>, NullableField<R, T> {
   }
 
   isNotNull(): Condition<R> {
-    return new ConditionImpl<T>({
+    return new ConditionImpl<T>(this.tableName, {
       __kind: "nullcheck",
       isNull: false,
       fieldName: this.name,

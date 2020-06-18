@@ -1,4 +1,5 @@
-import { Repo, RepoImpl } from "./orm/repo";
+import { Table, TableImpl } from "./orm/table";
+import { ConnectionImpl } from "./orm/connection";
 
 interface User {
   name: string;
@@ -6,17 +7,18 @@ interface User {
   title: string | null;
 }
 
-const repo: Repo<User> = new RepoImpl<User>("users");
+const Users: Table<User> = new TableImpl<User>("users");
+const connection = new ConnectionImpl();
 
 // Null checks:
-repo.query((row) => row.title.isNotNull());
-repo.query((row) => row.name.isNull()); // this won't compile because it is non-nullable
+connection.execute(Users.query().title.isNotNull());
+// connection.execute(Users.query().name.isNotNull()); // this won't compile because it is non-nullable
 
 // comparisons:
-repo.query((row) => row.name.eq("sloane"));
-repo.query((row) => row.name.eq(123)); // won't compile because wrong type
+connection.execute(Users.query().name.eq("sloane"));
+// connection.execute(Users.query().name.eq(123)); // won't compile because wrong type
 
 // ands
-repo.query((row) =>
-  row.name.eq("sloane").and(row.title.isNotNull()).and(row.id.eq(3))
+connection.execute(
+  Users.query().name.eq("sloane").and(Users.query().title.isNotNull())
 );

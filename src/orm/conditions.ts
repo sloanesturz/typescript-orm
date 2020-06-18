@@ -1,5 +1,6 @@
 export interface Condition<T> {
   clause: Chunk<T>;
+  tableName: string;
 
   and(other: Condition<T>): Condition<T>;
 }
@@ -33,10 +34,10 @@ export interface BooleanLogic<R, T> {
 }
 
 export class ConditionImpl<T> implements Condition<T> {
-  constructor(public clause: Chunk<T>) {}
+  constructor(public tableName: string, public clause: Chunk<T>) {}
 
   and(other: Condition<T>): Condition<T> {
-    return new ConditionImpl<T>({
+    return new ConditionImpl<T>(this.tableName, {
       __kind: "boolean",
       __boolean_type: "and",
       lhs: this.clause,
