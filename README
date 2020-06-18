@@ -1,0 +1,8 @@
+WIP
+
+Vision: bring the simplicity of scala Quill to Typescript
+
+Goals:
+* everything is typesafe
+* model objects are plain old javascript structures
+
