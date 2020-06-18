@@ -6,20 +6,26 @@ interface Connection {
 
 export class ConnectionImpl {
   private asString<T>(c: Chunk<T>): string {
-    if (c.__kind == "comparison") {
-      if (c.__comparison_type === "eq") {
-        return `${c.fieldName} = ${c.value}`;
-      } else {
-        return `${c.fieldName} > ${c.value}`;
-      }
-    } else if (c.__kind === "boolean") {
-      if (c.__boolean_type === "or") {
-        return `${this.asString(c.lhs)} OR ${this.asString(c.rhs)}`;
-      } else if (c.__boolean_type === "and") {
-        return `${this.asString(c.lhs)} AND ${this.asString(c.rhs)}`;
-      }
+    switch (c.__kind) {
+      case "comparison":
+        if (c.__comparison_type === "eq") {
+          return `${c.fieldName} = ${c.value}`;
+        } else {
+          return `${c.fieldName} > ${c.value}`;
+        }
+      case "boolean":
+        if (c.__boolean_type === "or") {
+          return `${this.asString(c.lhs)} OR ${this.asString(c.rhs)}`;
+        } else {
+          return `${this.asString(c.lhs)} AND ${this.asString(c.rhs)}`;
+        }
+      case "nullcheck":
+        if (c.isNull) {
+          return `${c.fieldName} IS NULL`;
+        } else {
+          return `${c.fieldName} IS NOT NULL`;
+        }
     }
-    return ""; // can't happen
   }
 
   execute<T>(condition: Condition<T>): Promise<T[]> {
